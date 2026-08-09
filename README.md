@@ -33,6 +33,9 @@ Whether you're shopping as a guest or a registered user, EA Mart guarantees a bu
 - 🛒 **Smart Shopping Cart** — Guest carts use Django sessions, while account carts are securely saved in the database. When a guest logs in, their cart magically merges! ✨
 - 🔐 **Secure Order Processing** — Login-gated checkout, server-calculated prices, row-locked stock validation, atomic order creation, and inventory reduction.
 - 👑 **Custom Admin Dashboard** — A completely **custom, enhanced Admin Panel** designed specifically for store owners. Manage products, track orders, view galleries, and update statuses with ease!
+- 📱 **Mobile-First Approach** — Flawless UI/UX on smartphones and tablets, featuring off-canvas menus and touch-friendly product galleries.
+- ⚡ **Optimized Performance** — Efficient database queries, lazy-loaded assets, and streamlined logic make the application incredibly fast!
+- 🔄 **Real-Time Price Calculation** — Dynamic cart totals, shipping calculations, and discounts update seamlessly as you shop.
 - 🐳 **Dockerized Setup** — Fully containerized environment for seamless deployment and local development. Run the whole stack with one command!
 - ☁️ **Cloud Storage Integration** — Integrated with **Cloudinary** for lightning-fast, highly optimized product images globally!
 - 🐘 **Robust Database** — Powered by **PostgreSQL** for maximum reliability and concurrency handling.
@@ -54,56 +57,7 @@ Whether you're shopping as a guest or a registered user, EA Mart guarantees a bu
 
 ---
 
-## 🏃‍♂️ Quick Start (Local Magic)
 
-### 🐳 The Docker Way (Super Fast)
-Got Docker? Spin up the whole universe (App + Postgres + Networks) in one go:
-```bash
-docker-compose up --build
-```
-
-### 💻 The Manual Way (For the purists)
-
-**1. Create a virtual environment:**
-```bash
-# macOS/Linux
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Windows
-py -m venv .venv
-.venv\Scripts\Activate.ps1
-```
-
-**2. Install all the goodies:**
-```bash
-pip install -r requirements.txt
-```
-
-**3. Setup Secrets:**
-Copy the `.env.example` and fill in your keys (PostgreSQL, Cloudinary, etc.):
-```bash
-cp .env.example .env
-```
-
-**4. Migrate & Seed the Database:**
-```bash
-python manage.py migrate
-python manage.py seed_store  # Populates 24 realistic dummy products instantly! 📦
-```
-
-**5. Create a Superuser (Admin):**
-```bash
-python manage.py createsuperuser
-```
-
-**6. Launch the Rocket! 🚀**
-```bash
-python manage.py runserver
-```
-Visit `http://127.0.0.1:8000/` and enjoy the show! 🎉
-
----
 
 ## 🌍 Cloud Deployment (Vercel)
 
