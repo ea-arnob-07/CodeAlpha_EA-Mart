@@ -21,4 +21,11 @@ def app(environ, start_response):
     if startup_error:
         start_response('500 Internal Server Error', [('Content-Type', 'text/plain')])
         return [startup_error.encode('utf-8')]
-    return _application(environ, start_response)
+    
+    try:
+        return _application(environ, start_response)
+    except BaseException as e:
+        import traceback
+        err = "Runtime Error:\n" + traceback.format_exc()
+        start_response('500 Internal Server Error', [('Content-Type', 'text/plain')])
+        return [err.encode('utf-8')]
