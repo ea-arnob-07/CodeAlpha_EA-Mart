@@ -1,9 +1,12 @@
-from http.server import BaseHTTPRequestHandler
+import os
+import sys
 
-class handler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type','text/plain')
-        self.end_headers()
-        self.wfile.write('Hello Vercel! Python works!'.encode('utf-8'))
-        return
+# Add project root to sys.path
+root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if root_path not in sys.path:
+    sys.path.insert(0, root_path)
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+
+from django.core.wsgi import get_wsgi_application
+app = get_wsgi_application()
