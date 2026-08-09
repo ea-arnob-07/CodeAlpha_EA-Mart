@@ -5,7 +5,6 @@ __pycache__/
 
 media/*
 !media/.gitkeep
-staticfiles/
 .pytest_cache/
 .coverage
 htmlcov/
