@@ -1,19 +1,24 @@
 import os
 import sys
 
-# Add the project root directory to the Python path
 path = os.path.dirname(os.path.abspath(__file__))
 if path not in sys.path:
     sys.path.append(path)
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
+_application = None
+startup_error = None
+
 try:
     from django.core.wsgi import get_wsgi_application
-    app = get_wsgi_application()
-except Exception as e:
+    _application = get_wsgi_application()
+except Exception:
     import traceback
-    err = traceback.format_exc()
-    def app(environ, start_response):
+    startup_error = traceback.format_exc()
+
+def app(environ, start_response):
+    if startup_error:
         start_response('500 Internal Server Error', [('Content-Type', 'text/plain')])
-        return [err.encode('utf-8')]
+        return [startup_error.encode('utf-8')]
+    return _application(environ, start_response)
