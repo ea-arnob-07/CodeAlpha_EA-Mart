@@ -1,104 +1,98 @@
-# EA Mart
+# 🛒 EA Mart
 
-EA Mart is a complete Django e-commerce store with a premium responsive interface, a session-aware shopping cart, secure account flows, and transaction-safe Cash on Delivery checkout. The included catalogue command adds **24 realistic demo products across 6 categories**.
+**EA Mart** is a complete, feature-rich Django e-commerce store with a premium responsive interface, a session-aware shopping cart, secure account flows, and transaction-safe Cash on Delivery checkout. 
 
-The footer on every customer-facing page includes the required credit: **Developed by Estiuk Arafat Arnob**.
+This project is built for scale, featuring modern technologies like **PostgreSQL**, **Cloudinary** for image hosting, **Docker** for containerization, and a fully **custom Admin Panel** tailored for store management. 
 
-## Project highlights
+---
 
-1. **Premium storefront** — responsive product grids, search, category and price filters, sorting, pagination, product galleries, polished states, and accessible interaction patterns.
-2. **Persistent shopping cart** — guest carts use Django sessions; account carts use the database; guest selections merge safely after registration or login.
-3. **Secure order processing** — login-gated checkout, server-calculated prices, row-locked stock validation, atomic order creation, inventory reduction, and order history.
-4. **Store administration** — searchable product and order management, inline order items and product galleries, status filters, image uploads, and an idempotent demo-data command.
+## ✨ Project Highlights
 
-## Technology
+1. **Premium Storefront** — Highly responsive product grids, search, category and price filters, sorting, pagination, product galleries, polished states, and accessible interaction patterns.
+2. **Persistent Shopping Cart** — Guest carts use Django sessions; account carts use the database. Guest selections merge safely after registration or login.
+3. **Secure Order Processing** — Login-gated checkout, server-calculated prices, row-locked stock validation, atomic order creation, inventory reduction, and order history.
+4. **Custom Store Administration** — A dedicated, enhanced admin panel with searchable product and order management, inline order items and product galleries, status filters, and image uploads.
+5. **Modern Tech Stack** — Fully containerized with **Docker**, using **PostgreSQL** as the primary database, and **Cloudinary** for scalable, cloud-based media management.
+6. **Cloud Deployment Ready** — Fully configured for seamless deployment on **Vercel**.
 
-- Python and Django
-- Django templates, HTML5, CSS3, and vanilla JavaScript
-- SQLite by default, with environment-based database settings ready for PostgreSQL
-- Pillow for admin image uploads
+---
 
-## Local setup
+## 🛠️ Technology Stack
 
-### 1. Create a virtual environment
+- **Backend:** Python, Django
+- **Frontend:** Django templates, HTML5, CSS3, Vanilla JavaScript
+- **Database:** PostgreSQL (with SQLite fallback for local development)
+- **Media Storage:** Cloudinary
+- **Containerization:** Docker
+- **Deployment:** Vercel (`vercel.json` included)
+- **Image Processing:** Pillow
 
-macOS/Linux:
+---
 
+## 🚀 Quick Start (Local Setup)
+
+### 1. Using Docker (Recommended)
+If you have Docker installed, you can spin up the entire environment (including PostgreSQL) with a single command:
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+docker-compose up --build
 ```
 
-Windows PowerShell:
+### 2. Manual Setup
+If you prefer running it without Docker:
 
-```powershell
+**Create a virtual environment:**
+```bash
+# macOS/Linux
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Windows PowerShell
 py -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 
-### 2. Install dependencies
-
+**Install dependencies:**
 ```bash
-python -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-### 3. Configure environment variables
-
-Copy the example file and replace the development secret:
-
+**Configure environment variables:**
+Copy the example file and fill in your secrets (including Cloudinary and PostgreSQL credentials):
 ```bash
 cp .env.example .env
 ```
 
-On Windows, copy `.env.example` to `.env` using File Explorer or:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-The default settings use SQLite. Do not use the sample development secret in production.
-
-### 4. Apply migrations
-
+**Apply migrations and seed data:**
 ```bash
 python manage.py migrate
+python manage.py seed_store  # Loads 24 realistic demo products
 ```
 
-### 5. Load the demo catalogue
-
-```bash
-python manage.py seed_store
-```
-
-The command is safe to run repeatedly: it updates the same 24 products instead of duplicating them. To deliberately replace the current catalogue, run `python manage.py seed_store --clear`.
-
-Product photography uses remote Unsplash image URLs; the interface automatically shows the included EA Mart placeholder if an image cannot load. Administrators can upload local product, category, gallery, and profile images.
-
-### 6. Create an administrator
-
+**Create an administrator:**
 ```bash
 python manage.py createsuperuser
 ```
 
-No administrator password is included or hard-coded. After creating the account, visit `/admin/`.
-
-### 7. Start the development server
-
+**Start the development server:**
 ```bash
 python manage.py runserver
 ```
+Visit `http://127.0.0.1:8000/` in your browser.
 
-Open `http://127.0.0.1:8000/` in a browser.
+---
 
-### 8. Run the automated tests
+## ☁️ Deployment (Vercel)
 
-```bash
-python manage.py test
-```
+This project includes a `vercel.json` file for easy deployment on Vercel.
 
-The suite covers registration, login/cart merging, cart quantities, stock limits, checkout authorization, server-side totals, free delivery, atomic stock validation, and order ownership.
+1. Push your repository to GitHub.
+2. Import the project in Vercel.
+3. Add the required Environment Variables in Vercel settings (e.g., `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`, Database credentials, and Cloudinary keys).
+4. Deploy!
 
-## Main routes
+---
+
+## 🗂️ Main Routes
 
 | Route | Purpose |
 | --- | --- |
@@ -111,39 +105,18 @@ The suite covers registration, login/cart merging, cart quantities, stock limits
 | `/account/login/` | Login |
 | `/account/profile/` | Profile and delivery details |
 | `/account/orders/` | Order history |
-| `/admin/` | Django administration |
+| `/admin/` | Custom Django administration panel |
 
-## Order logic
+---
 
-- Cash on Delivery is the only active payment method; the card option in the interface is visibly disabled and demo-only.
-- Delivery costs ৳120 below ৳3,000 and is complimentary at or above ৳3,000.
-- Prices and totals are calculated from current database values on the server.
-- Checkout locks product rows, verifies stock, creates the order and line-item snapshots, reduces inventory, and clears the cart inside one database transaction.
-- Available statuses are Pending, Confirmed, Processing, Shipped, Delivered, and Cancelled.
+## ⚙️ Order & Business Logic
 
-## PostgreSQL migration
+- **Payment:** Cash on Delivery is the active payment method. The card option in the UI is disabled for demo purposes.
+- **Delivery:** Delivery costs ৳120 for orders below ৳3,000, and is free for orders at or above ৳3,000.
+- **Security:** Prices and totals are calculated securely on the server. Checkout locks product rows, verifies stock, creates the order, reduces inventory, and clears the cart inside a single atomic database transaction.
+- **Order Tracking:** Available statuses include Pending, Confirmed, Processing, Shipped, Delivered, and Cancelled.
 
-Install a PostgreSQL driver such as `psycopg`, create a database, and set the commented `DB_*` variables from `.env.example`. Django models and queries do not depend on SQLite-specific application code. Run migrations against the new database before loading catalogue data.
+---
 
-## Production notes
-
-- Set `DJANGO_DEBUG=False`, use a strong `DJANGO_SECRET_KEY`, and configure `DJANGO_ALLOWED_HOSTS`.
-- Serve static and media files with your web server or object-storage setup.
-- Configure HTTPS and verify secure-cookie and HSTS settings for your deployment.
-- Replace remote demo imagery with owned or properly licensed production assets.
-
-## Structure
-
-```text
-EA_Mart/
-├── config/                 # Django project settings and root URLs
-├── shop/                   # Models, forms, views, admin, cart logic, tests
-│   ├── management/commands/seed_store.py
-│   └── migrations/
-├── templates/              # Store, account, component, and error templates
-├── static/                 # Premium CSS, vanilla JS, image fallback
-├── media/                  # User-uploaded assets during development
-├── manage.py
-├── requirements.txt
-└── .env.example
-```
+## 👨‍💻 Developed By
+**Estiuk Arafat Arnob**
