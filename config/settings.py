@@ -70,10 +70,24 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
+sqlite_db_path = BASE_DIR / "db.sqlite3"
+tmp_db_path = Path("/tmp/db.sqlite3")
+
+if os.environ.get("VERCEL") or os.environ.get("VERCEL_URL"):
+    import shutil
+    if not os.environ.get("DB_ENGINE") and sqlite_db_path.exists():
+        if not tmp_db_path.exists():
+            shutil.copy2(sqlite_db_path, tmp_db_path)
+        db_name = tmp_db_path
+    else:
+        db_name = os.environ.get("DB_NAME", sqlite_db_path)
+else:
+    db_name = os.environ.get("DB_NAME", sqlite_db_path)
+
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("DB_NAME", BASE_DIR / "db.sqlite3"),
+        "NAME": db_name,
         "USER": os.environ.get("DB_USER", ""),
         "PASSWORD": os.environ.get("DB_PASSWORD", ""),
         "HOST": os.environ.get("DB_HOST", ""),
