@@ -25,7 +25,20 @@ INSTALLED_APPS = [
     "shop.apps.ShopConfig",
 ]
 
+class DebugMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        try:
+            return self.get_response(request)
+        except Exception:
+            import traceback
+            from django.http import HttpResponse
+            return HttpResponse("DJANGO RUNTIME ERROR:\n" + traceback.format_exc(), content_type="text/plain", status=500)
+
 MIDDLEWARE = [
+    "config.settings.DebugMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
