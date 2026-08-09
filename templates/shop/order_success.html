@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Order confirmed — EA Mart{% endblock %}
+{% block content %}
+<section class="section success-page">
+    <div class="container narrow-container">
+        <div class="success-card">
+            <div class="success-mark"><span>✓</span></div>
+            <span class="kicker">Order received</span>
+            <h1>Thank you, {{ order.customer_name }}.</h1>
+            <p>Your collection is being prepared with care. We’ll keep you updated as it moves.</p>
+            <div class="order-number-card"><small>Order number</small><strong>{{ order.order_number }}</strong><button type="button" data-copy="{{ order.order_number }}">Copy</button></div>
+            <div class="success-details"><div><span>Delivery to</span><strong>{{ order.city }}</strong><small>{{ order.delivery_address }}</small></div><div><span>Payment</span><strong>{{ order.get_payment_method_display }}</strong><small>৳{{ order.grand_total|floatformat:0 }} due on delivery</small></div></div>
+            <div class="success-actions"><a class="btn btn-primary" href="{{ order.get_absolute_url }}">View order details</a><a class="btn btn-secondary" href="{% url 'shop:product_list' %}">Continue shopping</a></div>
+        </div>
+    </div>
+</section>
+{% endblock %}

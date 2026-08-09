@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Shop the collection — EA Mart{% endblock %}
+{% block meta_description %}Explore EA Mart’s curated collection across style, home, technology, and wellness.{% endblock %}
+{% block content %}
+<section class="page-hero shop-hero">
+    <div class="container">
+        <span class="kicker kicker-light">Curated with intention</span>
+        <h1>Shop the collection</h1>
+        <p>Pieces worth owning, selected for how beautifully they fit into real life.</p>
+    </div>
+</section>
+
+<section class="section shop-layout-section">
+    <div class="container">
+        <button class="filter-mobile-toggle" type="button" data-filter-toggle>Filters & sorting <span>⌄</span></button>
+        <div class="shop-layout">
+            <aside class="filters" data-filter-panel>
+                <div class="filter-heading"><h2>Refine</h2><a href="{% url 'shop:product_list' %}">Reset</a></div>
+                <form method="get" action="{% url 'shop:product_list' %}">
+                    <div class="filter-group">
+                        <label for="shop-search">Search</label>
+                        <div class="compact-search"><input id="shop-search" name="q" type="search" value="{{ query }}" placeholder="Product name"><button type="submit">→</button></div>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Category</span>
+                        <label class="radio-row"><input type="radio" name="category" value="" {% if not selected_category %}checked{% endif %}><span>All products</span></label>
+                        {% for category in categories %}
+                            <label class="radio-row"><input type="radio" name="category" value="{{ category.slug }}" {% if selected_category == category.slug %}checked{% endif %}><span>{{ category.name }}</span></label>
+                        {% endfor %}
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Price range</span>
+                        <div class="price-inputs">
+                            <label>Min<input name="min_price" inputmode="decimal" value="{{ min_price }}" placeholder="৳0"></label>
+                            <label>Max<input name="max_price" inputmode="decimal" value="{{ max_price }}" placeholder="৳20,000"></label>
+                        </div>
+                    </div>
+                    <input type="hidden" name="sort" value="{{ sort }}">
+                    <button class="btn btn-primary btn-block" type="submit">Apply filters</button>
+                </form>
+            </aside>
+
+            <div class="shop-results">
+                <div class="results-toolbar">
+                    <p><strong>{{ page_obj.paginator.count }}</strong> curated item{{ page_obj.paginator.count|pluralize }}</p>
+                    <form method="get" class="sort-form">
+                        <input type="hidden" name="q" value="{{ query }}">
+                        <input type="hidden" name="category" value="{{ selected_category }}">
+                        <input type="hidden" name="min_price" value="{{ min_price }}">
+                        <input type="hidden" name="max_price" value="{{ max_price }}">
+                        <label for="sort">Sort by</label>
+                        <select id="sort" name="sort" onchange="this.form.submit()">
+                            <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest</option>
+                            <option value="price_low" {% if sort == 'price_low' %}selected{% endif %}>Price: low to high</option>
+                            <option value="price_high" {% if sort == 'price_high' %}selected{% endif %}>Price: high to low</option>
+                            <option value="name" {% if sort == 'name' %}selected{% endif %}>Product name</option>
+                        </select>
+                    </form>
+                </div>
+
+                {% if page_obj %}
+                    <div class="product-grid product-grid-shop">
+                        {% for product in page_obj %}{% include "components/product_card.html" %}{% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <span class="empty-icon">◇</span>
+                        <h2>No pieces found</h2>
+                        <p>Try another search or remove a filter to see more of the collection.</p>
+                        <a class="btn btn-primary" href="{% url 'shop:product_list' %}">Clear all filters</a>
+                    </div>
+                {% endif %}
+
+                {% if page_obj.paginator.num_pages > 1 %}
+                    <nav class="pagination" aria-label="Product pages">
+                        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}&q={{ query|urlencode }}&category={{ selected_category }}&min_price={{ min_price }}&max_price={{ max_price }}&sort={{ sort }}" aria-label="Previous page">←</a>{% endif %}
+                        {% for number in page_obj.paginator.page_range %}
+                            {% if number == page_obj.number %}<span class="current">{{ number }}</span>{% elif number >= page_obj.number|add:'-2' and number <= page_obj.number|add:'2' %}<a href="?page={{ number }}&q={{ query|urlencode }}&category={{ selected_category }}&min_price={{ min_price }}&max_price={{ max_price }}&sort={{ sort }}">{{ number }}</a>{% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}&q={{ query|urlencode }}&category={{ selected_category }}&min_price={{ min_price }}&max_price={{ max_price }}&sort={{ sort }}" aria-label="Next page">→</a>{% endif %}
+                    </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

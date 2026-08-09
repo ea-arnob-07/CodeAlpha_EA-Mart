@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} — EA Mart{% endblock %}
+{% block meta_description %}{{ product.short_description }}{% endblock %}
+{% block content %}
+<section class="section product-detail-section">
+    <div class="container">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <a href="{% url 'shop:home' %}">Home</a><span>/</span><a href="{% url 'shop:product_list' %}">Shop</a><span>/</span><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a><span>/</span><span>{{ product.name }}</span>
+        </nav>
+        <div class="product-detail-grid">
+            <div class="product-gallery">
+                <div class="main-product-image">
+                    {% if product.discount_percentage %}<span class="product-badge">Save {{ product.discount_percentage }}%</span>{% endif %}
+                    <img src="{{ product.display_image|default:'/static/images/placeholder.svg' }}" alt="{{ product.name }}" data-main-image data-image-fallback>
+                </div>
+                {% if product.gallery_images.all %}
+                    <div class="thumbnail-row">
+                        <button class="thumbnail active" type="button" data-gallery-image="{{ product.display_image }}"><img src="{{ product.display_image }}" alt="{{ product.name }}" data-image-fallback></button>
+                        {% for gallery in product.gallery_images.all %}
+                            <button class="thumbnail" type="button" data-gallery-image="{{ gallery.display_image }}"><img src="{{ gallery.display_image }}" alt="{{ gallery.alt_text|default:product.name }}" data-image-fallback></button>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="product-info">
+                <span class="kicker">{{ product.category.name }}</span>
+                <h1>{{ product.name }}</h1>
+                <div class="detail-rating"><span aria-hidden="true">★★★★★</span><strong>{{ product.rating }}</strong><a href="#details">{{ product.review_count }} reviews</a></div>
+                <div class="detail-price"><strong>৳{{ product.price|floatformat:0 }}</strong>{% if product.previous_price %}<del>৳{{ product.previous_price|floatformat:0 }}</del><span>You save ৳{{ product.savings_amount|floatformat:0 }}</span>{% endif %}</div>
+                <p class="lead">{{ product.short_description }}</p>
+                <div class="stock-line">
+                    {% if product.in_stock %}<span class="stock-dot"></span><strong>In stock</strong><small>{{ product.stock_quantity }} available</small>{% else %}<span class="stock-dot out"></span><strong>Currently unavailable</strong>{% endif %}
+                </div>
+                {% if product.in_stock %}
+                    <form class="detail-cart-form ajax-cart-form" action="{% url 'shop:cart_add' product.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="quantity-control" data-quantity>
+                            <button type="button" data-quantity-minus aria-label="Decrease quantity">−</button>
+                            <input name="quantity" type="number" value="1" min="1" max="{{ product.stock_quantity }}" aria-label="Quantity">
+                            <button type="button" data-quantity-plus aria-label="Increase quantity">+</button>
+                        </div>
+                        <button class="btn btn-primary btn-lg flex-1" type="submit">Add to cart <span>→</span></button>
+                    </form>
+                {% else %}
+                    <button class="btn btn-disabled btn-lg btn-block" disabled>Out of stock</button>
+                {% endif %}
+                <div class="detail-perks">
+                    <div><span>♢</span><p><strong>Authenticity assured</strong><small>Carefully quality checked</small></p></div>
+                    <div><span>↺</span><p><strong>Easy returns</strong><small>Simple support process</small></p></div>
+                    <div><span>⌁</span><p><strong>Secure checkout</strong><small>Your details stay protected</small></p></div>
+                </div>
+            </div>
+        </div>
+        <div class="product-description" id="details">
+            <span class="kicker">The details</span>
+            <h2>Why you’ll love it</h2>
+            <div>{{ product.description|linebreaks }}</div>
+        </div>
+    </div>
+</section>
+
+{% if related_products %}
+<section class="section section-tint">
+    <div class="container">
+        <div class="section-heading split-heading"><div><span class="kicker">Complete the edit</span><h2>You may also like</h2></div><a class="text-link" href="{{ product.category.get_absolute_url }}">View category →</a></div>
+        <div class="product-grid">{% for product in related_products %}{% include "components/product_card.html" %}{% endfor %}</div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

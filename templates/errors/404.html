@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}Page not found — EA Mart{% endblock %}
+{% block content %}<section class="error-page"><div class="container"><span class="error-code">404</span><span class="kicker">Lost in the collection</span><h1>This page has moved on.</h1><p>The piece you’re looking for may have found a new home—or the address may be slightly off.</p><a class="btn btn-primary btn-lg" href="{% url 'shop:home' %}">Return home</a></div></section>{% endblock %}

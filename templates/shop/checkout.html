@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Secure checkout — EA Mart{% endblock %}
+{% block content %}
+<section class="page-hero compact-hero"><div class="container"><span class="kicker kicker-light">Almost yours</span><h1>Secure checkout</h1><p>Complete your delivery details and review your order.</p></div></section>
+<section class="section checkout-section">
+    <div class="container checkout-layout">
+        <form class="checkout-form" method="post" novalidate>
+            {% csrf_token %}
+            {% include "components/form_errors.html" %}
+            <div class="checkout-block">
+                <div class="numbered-heading"><span>01</span><div><h2>Contact details</h2><p>We’ll use these details for your order updates.</p></div></div>
+                <div class="form-grid">
+                    <div class="field field-full"><label for="{{ form.customer_name.id_for_label }}">Full name</label>{{ form.customer_name }}{% for error in form.customer_name.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+                    <div class="field"><label for="{{ form.email.id_for_label }}">Email</label>{{ form.email }}{% for error in form.email.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+                    <div class="field"><label for="{{ form.phone.id_for_label }}">Phone</label>{{ form.phone }}{% for error in form.phone.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+                </div>
+            </div>
+            <div class="checkout-block">
+                <div class="numbered-heading"><span>02</span><div><h2>Delivery address</h2><p>Where should we send your collection?</p></div></div>
+                <div class="form-grid">
+                    <div class="field field-full"><label for="{{ form.delivery_address.id_for_label }}">Full delivery address</label>{{ form.delivery_address }}{% for error in form.delivery_address.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+                    <div class="field"><label for="{{ form.city.id_for_label }}">City</label>{{ form.city }}{% for error in form.city.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+                    <div class="field"><label for="{{ form.postal_code.id_for_label }}">Postal code</label>{{ form.postal_code }}{% for error in form.postal_code.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+                    <div class="field field-full"><label for="{{ form.order_notes.id_for_label }}">Delivery note <span>Optional</span></label>{{ form.order_notes }}{% for error in form.order_notes.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+                </div>
+            </div>
+            <div class="checkout-block">
+                <div class="numbered-heading"><span>03</span><div><h2>Payment</h2><p>Pay comfortably when your order arrives.</p></div></div>
+                <div class="payment-options">
+                    {% for radio in form.payment_method %}<label class="payment-option">{{ radio.tag }}<span class="payment-radio"></span><span class="payment-copy"><strong>{{ radio.choice_label }}</strong><small>Pay in cash when your order is delivered</small></span><span class="payment-icon">৳</span></label>{% endfor %}
+                    <div class="payment-option disabled" aria-disabled="true"><input type="radio" disabled><span class="payment-radio"></span><span class="payment-copy"><strong>Card payment <em>Demo only</em></strong><small>Coming soon</small></span><span class="payment-icon">▣</span></div>
+                </div>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block checkout-submit" type="submit">Place order · ৳{{ grand_total|floatformat:0 }} <span>→</span></button>
+        </form>
+
+        <aside class="order-summary checkout-summary">
+            <span class="kicker">Your order</span><h2>{{ cart_items|length }} item{{ cart_items|length|pluralize }}</h2>
+            <div class="checkout-items">
+                {% for item in cart_items %}
+                    <div class="checkout-item"><div class="checkout-thumb"><img src="{{ item.product.display_image|default:'/static/images/placeholder.svg' }}" alt="" data-image-fallback><span>{{ item.quantity }}</span></div><div><strong>{{ item.product.name }}</strong><small>{{ item.product.category.name }}</small></div><b>৳{{ item.line_total|floatformat:0 }}</b></div>
+                {% endfor %}
+            </div>
+            <dl><div><dt>Subtotal</dt><dd>৳{{ subtotal|floatformat:0 }}</dd></div><div><dt>Delivery</dt><dd>{% if delivery_fee %}৳{{ delivery_fee|floatformat:0 }}{% else %}<span class="success-text">Complimentary</span>{% endif %}</dd></div><div class="summary-total"><dt>Total</dt><dd>৳{{ grand_total|floatformat:0 }}</dd></div></dl>
+            <div class="checkout-assurance"><span>✓</span><p><strong>Order with confidence</strong><small>Stock and prices are revalidated securely when you place your order.</small></p></div>
+        </aside>
+    </div>
+</section>
+{% endblock %}

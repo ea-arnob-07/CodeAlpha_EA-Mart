@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ order.order_number }} — EA Mart{% endblock %}
+{% block content %}
+<section class="section order-detail-page"><div class="container narrow-wide">
+    <nav class="breadcrumbs"><a href="{% url 'shop:order_history' %}">Orders</a><span>/</span><span>{{ order.order_number }}</span></nav>
+    <div class="order-detail-head"><div><span class="kicker">Order details</span><h1>{{ order.order_number }}</h1><p>Placed on {{ order.created_at|date:"d F Y, g:i A" }}</p></div>{% include "components/order_status.html" %}</div>
+    <div class="order-progress">
+        <div class="progress-step {% if order.order_status != 'cancelled' %}active{% endif %}"><span>✓</span><small>Placed</small></div>
+        <div class="progress-line"></div><div class="progress-step {% if order.order_status == 'confirmed' or order.order_status == 'processing' or order.order_status == 'shipped' or order.order_status == 'delivered' %}active{% endif %}"><span>2</span><small>Confirmed</small></div>
+        <div class="progress-line"></div><div class="progress-step {% if order.order_status == 'shipped' or order.order_status == 'delivered' %}active{% endif %}"><span>3</span><small>Shipped</small></div>
+        <div class="progress-line"></div><div class="progress-step {% if order.order_status == 'delivered' %}active{% endif %}"><span>4</span><small>Delivered</small></div>
+    </div>
+    {% if order.order_status == 'cancelled' %}<div class="form-alert">This order has been cancelled.</div>{% endif %}
+    <div class="order-detail-grid">
+        <div class="order-products-card"><h2>Items</h2>{% for item in order.items.all %}<div class="order-product-row"><div class="order-product-image">{% if item.product %}<img src="{{ item.product.display_image|default:'/static/images/placeholder.svg' }}" alt="{{ item.product_name }}" data-image-fallback>{% else %}<img src="/static/images/placeholder.svg" alt=""{% endif %}</div><div><strong>{{ item.product_name }}</strong><small>Quantity {{ item.quantity }} · ৳{{ item.product_price|floatformat:0 }} each</small></div><b>৳{{ item.line_total|floatformat:0 }}</b></div>{% endfor %}<dl class="order-totals"><div><dt>Subtotal</dt><dd>৳{{ order.subtotal|floatformat:0 }}</dd></div><div><dt>Delivery</dt><dd>{% if order.delivery_fee %}৳{{ order.delivery_fee|floatformat:0 }}{% else %}Complimentary{% endif %}</dd></div><div><dt>Total</dt><dd>৳{{ order.grand_total|floatformat:0 }}</dd></div></dl></div>
+        <aside class="delivery-card"><h2>Delivery details</h2><div><span>Recipient</span><strong>{{ order.customer_name }}</strong></div><div><span>Address</span><strong>{{ order.delivery_address }}<br>{{ order.city }} {{ order.postal_code }}</strong></div><div><span>Contact</span><strong>{{ order.phone }}<br>{{ order.email }}</strong></div><div><span>Payment</span><strong>{{ order.get_payment_method_display }}<br>{{ order.get_payment_status_display }}</strong></div>{% if order.order_notes %}<div><span>Order note</span><strong>{{ order.order_notes }}</strong></div>{% endif %}</aside>
+    </div>
+</div></section>
+{% endblock %}

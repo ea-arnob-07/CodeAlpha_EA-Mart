@@ -1,0 +1,30 @@
+<article class="product-card">
+    <a class="product-image-wrap" href="{{ product.get_absolute_url }}" aria-label="View {{ product.name }}">
+        {% if product.discount_percentage %}<span class="product-badge">−{{ product.discount_percentage }}%</span>{% elif product.is_featured %}<span class="product-badge badge-featured">Editor's pick</span>{% endif %}
+        <img src="{{ product.display_image|default:'/static/images/placeholder.svg' }}" alt="{{ product.name }}" loading="lazy" data-image-fallback>
+        <span class="quick-view">View details</span>
+    </a>
+    <div class="product-card-body">
+        <div class="product-eyebrow">{{ product.category.name }}</div>
+        <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+        <div class="rating-row" aria-label="Rated {{ product.rating }} out of 5">
+            <span aria-hidden="true">★★★★★</span>
+            <small>{{ product.rating }} ({{ product.review_count }})</small>
+        </div>
+        <div class="product-card-footer">
+            <div class="price-wrap">
+                <strong>৳{{ product.price|floatformat:0 }}</strong>
+                {% if product.previous_price %}<del>৳{{ product.previous_price|floatformat:0 }}</del>{% endif %}
+            </div>
+            {% if product.in_stock %}
+                <form action="{% url 'shop:cart_add' product.id %}" method="post" class="ajax-cart-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="quantity" value="1">
+                    <button class="add-circle" type="submit" aria-label="Add {{ product.name }} to cart">+</button>
+                </form>
+            {% else %}
+                <span class="stock-pill out">Sold out</span>
+            {% endif %}
+        </div>
+    </div>
+</article>

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Your profile — EA Mart{% endblock %}
+{% block content %}
+<section class="page-hero compact-hero"><div class="container"><span class="kicker kicker-light">Your space</span><h1>Account settings</h1><p>Keep your details current for a seamless checkout.</p></div></section>
+<section class="section account-section"><div class="container account-shell">
+    <aside class="account-nav"><div class="account-avatar">{{ user.first_name|first|default:user.username|first|upper }}</div><div><strong>{{ user.get_full_name|default:user.username }}</strong><small>{{ user.email }}</small></div><nav><a class="active" href="{% url 'shop:profile' %}">Profile</a><a href="{% url 'shop:order_history' %}">Orders</a><a href="{% url 'shop:cart_detail' %}">Shopping bag</a></nav><form method="post" action="{% url 'shop:logout' %}">{% csrf_token %}<button class="text-button danger" type="submit">Sign out</button></form></aside>
+    <div class="account-content">
+        <div class="account-title"><div><span class="kicker">Personal details</span><h2>Your profile</h2></div></div>
+        <form method="post" enctype="multipart/form-data" class="profile-form" novalidate>{% csrf_token %}
+            {% include "components/form_errors.html" with form=user_form %}{% include "components/form_errors.html" with form=profile_form %}
+            <div class="form-grid">
+                <div class="field"><label for="{{ user_form.first_name.id_for_label }}">First name</label>{{ user_form.first_name }}{{ user_form.first_name.errors }}</div>
+                <div class="field"><label for="{{ user_form.last_name.id_for_label }}">Last name</label>{{ user_form.last_name }}{{ user_form.last_name.errors }}</div>
+                <div class="field field-full"><label for="{{ user_form.email.id_for_label }}">Email</label>{{ user_form.email }}{{ user_form.email.errors }}</div>
+                <div class="field field-full"><label for="{{ profile_form.full_name.id_for_label }}">Delivery name</label>{{ profile_form.full_name }}{{ profile_form.full_name.errors }}</div>
+                <div class="field"><label for="{{ profile_form.phone.id_for_label }}">Phone</label>{{ profile_form.phone }}{{ profile_form.phone.errors }}</div>
+                <div class="field"><label for="{{ profile_form.city.id_for_label }}">City</label>{{ profile_form.city }}{{ profile_form.city.errors }}</div>
+                <div class="field"><label for="{{ profile_form.postal_code.id_for_label }}">Postal code</label>{{ profile_form.postal_code }}{{ profile_form.postal_code.errors }}</div>
+                <div class="field"><label for="{{ profile_form.profile_image.id_for_label }}">Profile image</label>{{ profile_form.profile_image }}{{ profile_form.profile_image.errors }}</div>
+                <div class="field field-full"><label for="{{ profile_form.address.id_for_label }}">Address</label>{{ profile_form.address }}{{ profile_form.address.errors }}</div>
+            </div>
+            <button class="btn btn-primary" type="submit">Save changes</button>
+        </form>
+        {% if recent_orders %}<div class="recent-orders"><div class="account-title"><div><span class="kicker">At a glance</span><h2>Recent orders</h2></div><a class="text-link" href="{% url 'shop:order_history' %}">View all →</a></div>{% for order in recent_orders %}<a class="order-row" href="{{ order.get_absolute_url }}"><div><small>Order</small><strong>{{ order.order_number }}</strong></div><div><small>Date</small><strong>{{ order.created_at|date:"d M Y" }}</strong></div><div><small>Total</small><strong>৳{{ order.grand_total|floatformat:0 }}</strong></div><div>{% include "components/order_status.html" %}</div><span class="row-arrow">→</span></a>{% endfor %}</div>{% endif %}
+    </div>
+</div></section>
+{% endblock %}

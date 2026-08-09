@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Your shopping bag — EA Mart{% endblock %}
+{% block content %}
+<section class="page-hero compact-hero">
+    <div class="container"><span class="kicker kicker-light">Your selection</span><h1>Shopping bag</h1><p>{{ cart.item_count }} thoughtfully chosen item{{ cart.item_count|pluralize }}</p></div>
+</section>
+<section class="section cart-section">
+    <div class="container">
+        {% if cart_items %}
+            <div class="cart-layout">
+                <div class="cart-items-panel">
+                    <div class="cart-panel-head"><h2>Your items</h2><form action="{% url 'shop:cart_clear' %}" method="post" data-confirm="Remove every item from your cart?">{% csrf_token %}<button class="text-button danger" type="submit">Clear bag</button></form></div>
+                    {% for item in cart_items %}
+                        <article class="cart-item">
+                            <a class="cart-item-image" href="{{ item.product.get_absolute_url }}"><img src="{{ item.product.display_image|default:'/static/images/placeholder.svg' }}" alt="{{ item.product.name }}" data-image-fallback></a>
+                            <div class="cart-item-info">
+                                <span class="product-eyebrow">{{ item.product.category.name }}</span>
+                                <h3><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></h3>
+                                <span class="mobile-price">৳{{ item.product.price|floatformat:0 }}</span>
+                                <form class="cart-update-form" action="{% url 'shop:cart_update' item.id %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="quantity-control quantity-small" data-quantity>
+                                        <button type="button" data-quantity-minus aria-label="Decrease {{ item.product.name }} quantity">−</button>
+                                        <input name="quantity" type="number" value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity }}" aria-label="{{ item.product.name }} quantity">
+                                        <button type="button" data-quantity-plus aria-label="Increase {{ item.product.name }} quantity">+</button>
+                                    </div>
+                                    <button class="update-link" type="submit">Update</button>
+                                </form>
+                            </div>
+                            <div class="cart-item-price"><small>৳{{ item.product.price|floatformat:0 }} each</small><strong>৳{{ item.line_total|floatformat:0 }}</strong></div>
+                            <form class="cart-remove-form" action="{% url 'shop:cart_remove' item.id %}" method="post">{% csrf_token %}<button type="submit" aria-label="Remove {{ item.product.name }}">×</button></form>
+                        </article>
+                    {% endfor %}
+                    <a class="continue-link" href="{% url 'shop:product_list' %}">← Continue shopping</a>
+                </div>
+
+                <aside class="order-summary sticky-summary">
+                    <span class="kicker">Order overview</span>
+                    <h2>Summary</h2>
+                    {% if free_delivery_remaining > 0 %}
+                        <div class="delivery-progress"><p>Add <strong>৳{{ free_delivery_remaining|floatformat:0 }}</strong> more for free delivery</p><div><span style="width: {% widthratio subtotal free_delivery_threshold 100 %}%"></span></div></div>
+                    {% else %}
+                        <div class="free-delivery-note">✓ You unlocked free delivery</div>
+                    {% endif %}
+                    <dl>
+                        <div><dt>Subtotal</dt><dd data-cart-subtotal>৳{{ subtotal|floatformat:0 }}</dd></div>
+                        <div><dt>Delivery</dt><dd data-cart-delivery>{% if delivery_fee %}৳{{ delivery_fee|floatformat:0 }}{% else %}<span class="success-text">Complimentary</span>{% endif %}</dd></div>
+                        <div class="summary-total"><dt>Total</dt><dd data-cart-total>৳{{ grand_total|floatformat:0 }}</dd></div>
+                    </dl>
+                    <a class="btn btn-primary btn-lg btn-block" href="{% url 'shop:checkout' %}">Secure checkout <span>→</span></a>
+                    <p class="secure-note">⌁ Secure checkout · Cash on delivery</p>
+                </aside>
+            </div>
+        {% else %}
+            <div class="empty-state empty-cart">
+                <span class="empty-icon">◇</span>
+                <h2>Your bag is waiting</h2>
+                <p>Start with something you love. Your considered picks will appear here.</p>
+                <a class="btn btn-primary btn-lg" href="{% url 'shop:product_list' %}">Explore the collection</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

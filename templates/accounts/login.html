@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Welcome back — EA Mart{% endblock %}
+{% block content %}
+<section class="auth-section">
+    <div class="auth-visual"><div class="auth-visual-inner"><span class="kicker kicker-light">Members’ access</span><h1>Your collection<br>continues here.</h1><p>Sign in to complete your order, revisit past purchases, and enjoy a smoother checkout.</p><div class="auth-quote"><span>“</span><p>Luxury is the ease of finding exactly what belongs in your life.</p></div></div></div>
+    <div class="auth-form-wrap">
+        <div class="auth-form-card">
+            <a class="brand" href="{% url 'shop:home' %}"><span class="brand-mark">EA</span><span>EA Mart</span></a>
+            <span class="kicker">Welcome back</span><h2>Sign in to your account</h2><p class="auth-subtitle">New to EA Mart? <a href="{% url 'shop:register' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Create an account</a></p>
+            <form method="post" novalidate>
+                {% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+                {% include "components/form_errors.html" %}
+                <div class="field"><label for="{{ form.username.id_for_label }}">Username</label>{{ form.username }}{% for error in form.username.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+                <div class="field"><div class="label-row"><label for="{{ form.password.id_for_label }}">Password</label><span>Secure login</span></div><div class="password-field">{{ form.password }}<button type="button" data-password-toggle aria-label="Show password">Show</button></div>{% for error in form.password.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in <span>→</span></button>
+            </form>
+            <div class="auth-assurance"><span>⌁</span>Your login is protected by Django’s secure authentication.</div>
+        </div>
+    </div>
+</section>
+{% endblock %}

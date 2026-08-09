@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Your orders — EA Mart{% endblock %}
+{% block content %}
+<section class="page-hero compact-hero"><div class="container"><span class="kicker kicker-light">Your account</span><h1>Order history</h1><p>Every order and its latest progress, in one place.</p></div></section>
+<section class="section account-section"><div class="container account-shell">
+    <aside class="account-nav"><div class="account-avatar">{{ user.first_name|first|default:user.username|first|upper }}</div><div><strong>{{ user.get_full_name|default:user.username }}</strong><small>{{ user.email }}</small></div><nav><a href="{% url 'shop:profile' %}">Profile</a><a class="active" href="{% url 'shop:order_history' %}">Orders</a><a href="{% url 'shop:cart_detail' %}">Shopping bag</a></nav></aside>
+    <div class="account-content"><div class="account-title"><div><span class="kicker">Past purchases</span><h2>Your orders</h2></div><a class="btn btn-secondary" href="{% url 'shop:product_list' %}">Shop more</a></div>
+        {% if orders %}<div class="orders-list">{% for order in orders %}<a class="order-row" href="{{ order.get_absolute_url }}"><div><small>Order</small><strong>{{ order.order_number }}</strong></div><div><small>Placed</small><strong>{{ order.created_at|date:"d M Y" }}</strong></div><div><small>Total</small><strong>৳{{ order.grand_total|floatformat:0 }}</strong></div><div>{% include "components/order_status.html" %}</div><span class="row-arrow">→</span></a>{% endfor %}</div>{% else %}<div class="empty-state"><span class="empty-icon">◇</span><h2>No orders—yet</h2><p>When something catches your eye, your order will appear here.</p><a class="btn btn-primary" href="{% url 'shop:product_list' %}">Start exploring</a></div>{% endif %}
+    </div>
+</div></section>
+{% endblock %}
