@@ -23,8 +23,8 @@
 
     <header class="site-header" data-header>
         <div class="container nav-shell">
-            <a class="brand" href="{% url 'shop:home' %}" aria-label="EA Mart home">
-                <span class="brand-mark">EA</span>
+            <a class="brand" href="{% url 'shop:home' %}" aria-label="EA Mart home" style="display: flex; align-items: center;">
+                <img src="{% static 'images/logo.png' %}" alt="EA" style="height: 36px; width: auto; border-radius: 6px; margin-right: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <span>EA Mart</span>
             </a>
 
@@ -101,7 +101,7 @@
     <footer class="site-footer">
         <div class="container footer-grid">
             <div class="footer-brand">
-                <a class="brand brand-light" href="{% url 'shop:home' %}"><span class="brand-mark">EA</span><span>EA Mart</span></a>
+                <a class="brand brand-light" href="{% url 'shop:home' %}" style="display: flex; align-items: center;"><img src="{% static 'images/logo.png' %}" alt="EA" style="height: 32px; width: auto; border-radius: 6px; margin-right: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"><span>EA Mart</span></a>
                 <p>Considered essentials for modern living—selected for quality, designed to delight.</p>
                 <div class="social-links" aria-label="Social links">
                     <a href="#" aria-label="Instagram">ig</a>
